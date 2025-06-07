@@ -18,12 +18,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.cardify.auth.TokenManager
 import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
 import com.example.cardify.models.LoginViewModel
 import com.example.cardify.models.MainScreenViewModel
+import com.example.cardify.cardbook.CardBookViewModel
+import com.example.cardify.ui.screens.CardBookScreen
+import com.example.cardify.ui.screens.AddExistingScreen
+import com.example.cardify.ui.screens.EditCardScreen
+import com.example.cardify.ui.screens.OcrResultScreen
 import com.example.cardify.ui.screens.CreateEssentialsScreen
 import com.example.cardify.ui.screens.CreateProgressScreen
 import com.example.cardify.ui.screens.CreateQuestionScreen
@@ -64,6 +71,10 @@ sealed class Screen(val route: String) {
     object CardDetail : Screen("card_detail/{cardId}") { //미구현
        fun createRoute(cardId: String) = "card_detail/$cardId" //미구현
     }
+    object OcrResult : Screen("ocr_result")
+    object EditCard : Screen("edit_card/{index}") {
+        fun createRoute(index: Int) = "edit_card/$index"
+    }
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -79,6 +90,8 @@ val token = tokenManager.getToken()
     val currentQuestion by cardCreationViewModel.currentQuestion.collectAsState()
     val loginViewModel: LoginViewModel = viewModel()
     val mainScreenViewModel: MainScreenViewModel = viewModel()
+    // Shared view model to store recognized cards across screens
+    val cardBookViewModel: CardBookViewModel = viewModel()
 
     //Navhost maps object(e.g.Splash) to Screen.kt
     //Start Destination fixed to Splash, which indicates SplashScreen.
@@ -255,6 +268,40 @@ val token = tokenManager.getToken()
                     },
                     token = token
                 )
+            }
+
+            composable(Screen.AddExisting.route) {
+                AddExistingScreen(navController = navController)
+            }
+
+            composable(Screen.OcrResult.route) {
+                val bitmap = com.example.cardify.ocr.CapturedImageHolder.bitmap
+                if (bitmap != null) {
+                    OcrResultScreen(
+                        navController = navController,
+                        viewModel = cardBookViewModel,
+                        bitmap = bitmap
+                    )
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
+                }
+            }
+
+            composable(Screen.CardBook.route) {
+                CardBookScreen(navController = navController)
+            }
+
+            composable(
+                route = Screen.EditCard.route,
+                arguments = listOf(navArgument("index") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val idx = backStackEntry.arguments?.getInt("index") ?: 0
+                val card = cardBookViewModel.cards.getOrNull(idx)
+                if (card != null) {
+                    EditCardScreen(navController = navController, viewModel = cardBookViewModel, index = idx, card = card)
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
+                }
             }
     }
 }
