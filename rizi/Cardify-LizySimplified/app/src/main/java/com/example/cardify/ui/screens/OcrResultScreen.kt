@@ -25,6 +25,13 @@ fun OcrResultScreen(
     var loading by remember { mutableStateOf(true) }
     var result by remember { mutableStateOf(OcrHelper.Result()) }
 
+    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var company by remember { mutableStateOf("") }
+    var position by remember { mutableStateOf("") }
+    var etc by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         result = OcrHelper.recognize(navController.context, bitmap)
         name = result.name
@@ -35,13 +42,6 @@ fun OcrResultScreen(
         etc = result.etc
         loading = false
     }
-
-    var name by remember { mutableStateOf(result.name) }
-    var phone by remember { mutableStateOf(result.phone) }
-    var email by remember { mutableStateOf(result.email) }
-    var company by remember { mutableStateOf(result.company) }
-    var position by remember { mutableStateOf(result.position) }
-    var etc by remember { mutableStateOf(result.etc) }
 
     Scaffold {
         if (loading) {
