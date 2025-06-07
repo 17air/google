@@ -16,15 +16,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.cardify.R
 import com.example.cardify.cardbook.CardBookViewModel
 import com.example.cardify.models.BusinessCard
 import com.example.cardify.ui.components.BottomNavBar
+import com.example.cardify.utils.ImageUtils
 
 @Composable
 fun CardBookScreen(
@@ -63,12 +64,21 @@ private fun CardRow(card: BusinessCard, onEdit: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (card.imageUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(card.imageUrl),
-                contentDescription = null,
-                modifier = Modifier.size(56.dp),
-                contentScale = ContentScale.Crop
-            )
+            val bitmap = remember(card.imageUrl) { ImageUtils.base64ToBitmap(card.imageUrl) }
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(56.dp),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(56.dp)
+                )
+            }
         } else {
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),

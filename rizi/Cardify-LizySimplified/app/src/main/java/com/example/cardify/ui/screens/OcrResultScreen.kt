@@ -16,6 +16,7 @@ import com.example.cardify.cardbook.CardBookViewModel
 import com.example.cardify.models.BusinessCard
 import com.example.cardify.navigation.Screen
 import com.example.cardify.ocr.OcrHelper
+import com.example.cardify.utils.ImageUtils
 
 @Composable
 fun OcrResultScreen(
@@ -57,22 +58,29 @@ fun OcrResultScreen(
                 OutlinedTextField(value = company, onValueChange = { company = it }, label = { Text("회사") }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(value = position, onValueChange = { position = it }, label = { Text("직책") }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(value = etc, onValueChange = { etc = it }, label = { Text("기타") }, modifier = Modifier.fillMaxWidth())
-                Button(onClick = {
-                    viewModel.addCard(
-                        BusinessCard(
-                            name = name,
-                            phone = phone,
-                            email = email,
-                            company = company,
-                            position = position,
-                            sns = etc
+                Button(
+                    onClick = {
+                        val imageBase64 = try {
+                            ImageUtils.bitmapToBase64(bitmap)
+                        } catch (e: Exception) {
+                            ""
+                        }
+                        viewModel.addCard(
+                            BusinessCard(
+                                name = name,
+                                phone = phone,
+                                email = email,
+                                company = company,
+                                position = position,
+                                sns = etc,
+                                imageUrl = imageBase64
+                            )
                         )
-                    )
-                    com.example.cardify.ocr.CapturedImageHolder.bitmap = null
-                    navController.navigate(Screen.CardBook.route) {
-                        popUpTo(Screen.CardBook.route) { inclusive = true }
-                    }
-                }, modifier = Modifier.fillMaxWidth()) {
+                        com.example.cardify.ocr.CapturedImageHolder.bitmap = null
+                        navController.popBackStack(Screen.Main.route, false)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text("저장")
                 }
             }
