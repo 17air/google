@@ -27,6 +27,7 @@ import com.example.cardify.models.CardCreationViewModel
 import com.example.cardify.models.LoginViewModel
 import com.example.cardify.models.MainScreenViewModel
 import com.example.cardify.ui.screens.CardBookScreen
+import com.example.cardify.ui.screens.AddExistingScreen
 import com.example.cardify.ui.screens.EditCardScreen
 import com.example.cardify.ui.screens.OcrResultScreen
 import com.example.cardify.ui.screens.CreateEssentialsScreen

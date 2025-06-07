@@ -94,6 +94,7 @@ dependencies {
 
     // Coroutine 연동용
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // Camera    
     implementation("androidx.camera:camera-core:1.4.2")

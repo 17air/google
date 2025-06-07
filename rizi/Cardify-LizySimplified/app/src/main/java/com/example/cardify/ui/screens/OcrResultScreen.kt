@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import com.example.cardify.cardbook.CardBookViewModel
 import com.example.cardify.models.BusinessCard
 import com.example.cardify.ocr.OcrHelper
-import kotlinx.coroutines.launch
 
 @Composable
 fun OcrResultScreen(
@@ -23,12 +22,17 @@ fun OcrResultScreen(
     viewModel: CardBookViewModel,
     bitmap: Bitmap
 ) {
-    val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(true) }
     var result by remember { mutableStateOf(OcrHelper.Result()) }
 
     LaunchedEffect(Unit) {
         result = OcrHelper.recognize(navController.context, bitmap)
+        name = result.name
+        phone = result.phone
+        email = result.email
+        company = result.company
+        position = result.position
+        etc = result.etc
         loading = false
     }
 
