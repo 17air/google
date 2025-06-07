@@ -69,8 +69,8 @@ fun OcrResultScreen(
                         )
                     )
                     com.example.cardify.ocr.CapturedImageHolder.bitmap = null
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Main.route) { inclusive = true }
+                    navController.navigate(Screen.CardBook.route) {
+                        popUpTo(Screen.CardBook.route) { inclusive = true }
                     }
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text("저장")

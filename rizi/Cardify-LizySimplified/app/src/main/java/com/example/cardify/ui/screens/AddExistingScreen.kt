@@ -66,14 +66,14 @@ fun AddExistingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
-                        text = "Add Existing Business Card",
+                        text = "명함 추가",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
                         )
-                    ) 
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -101,7 +101,7 @@ fun AddExistingScreen(
         ) {
             // Title
             Text(
-                text = "How would you like to add\nyour business card?",
+                text = "어떻게 명함을 등록하시겠습니까?",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
