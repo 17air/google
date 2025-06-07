@@ -112,7 +112,7 @@ fun AddExistingScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { cameraLauncher.launch() }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = { cameraLauncher.launch(null) }, modifier = Modifier.fillMaxWidth()) {
                 Text("카메라 찍기")
             }
 
