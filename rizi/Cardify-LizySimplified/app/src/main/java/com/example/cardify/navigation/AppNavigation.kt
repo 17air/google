@@ -288,11 +288,7 @@ val token = tokenManager.getToken()
             }
 
             composable(Screen.CardBook.route) {
-                CardBookScreen(
-                    navController = navController,
-                    viewModel = cardBookViewModel,
-                    onEdit = { index, _ -> navController.navigate(Screen.EditCard.createRoute(index)) }
-                )
+                CardBookScreen(navController = navController)
             }
 
             composable(
