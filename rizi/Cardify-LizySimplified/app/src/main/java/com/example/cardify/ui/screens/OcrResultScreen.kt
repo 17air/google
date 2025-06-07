@@ -1,0 +1,73 @@
+package com.example.cardify.ui.screens
+
+import android.graphics.Bitmap
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.cardify.cardbook.CardBookViewModel
+import com.example.cardify.models.BusinessCard
+import com.example.cardify.ocr.OcrHelper
+import kotlinx.coroutines.launch
+
+@Composable
+fun OcrResultScreen(
+    navController: NavController,
+    viewModel: CardBookViewModel,
+    bitmap: Bitmap
+) {
+    val scope = rememberCoroutineScope()
+    var loading by remember { mutableStateOf(true) }
+    var result by remember { mutableStateOf(OcrHelper.Result()) }
+
+    LaunchedEffect(Unit) {
+        result = OcrHelper.recognize(navController.context, bitmap)
+        loading = false
+    }
+
+    var name by remember { mutableStateOf(result.name) }
+    var phone by remember { mutableStateOf(result.phone) }
+    var email by remember { mutableStateOf(result.email) }
+    var company by remember { mutableStateOf(result.company) }
+    var position by remember { mutableStateOf(result.position) }
+    var etc by remember { mutableStateOf(result.etc) }
+
+    Scaffold {
+        if (loading) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("분석 중...")
+            }
+        } else {
+            Column(modifier = Modifier.padding(16.dp)) {
+                OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("이름") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = phone, onValueChange = { phone = it }, label = { Text("전화번호") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("이메일") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = company, onValueChange = { company = it }, label = { Text("회사") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = position, onValueChange = { position = it }, label = { Text("직책") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = etc, onValueChange = { etc = it }, label = { Text("기타") }, modifier = Modifier.fillMaxWidth())
+                Button(onClick = {
+                    viewModel.addCard(
+                        BusinessCard(
+                            name = name,
+                            phone = phone,
+                            email = email,
+                            company = company,
+                            position = position,
+                            sns = etc
+                        )
+                    )
+                    navController.popBackStack()
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text("저장")
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,7 @@
 package com.example.cardify.ui.screens
 
 import android.Manifest
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -57,15 +58,24 @@ fun AddExistingScreen(
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { onImageSelected(it) }
+        uri?.let {
+            val inputStream = context.contentResolver.openInputStream(it)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+            if (bitmap != null) {
+                com.example.cardify.ocr.CapturedImageHolder.bitmap = bitmap
+                navController.navigate(com.example.cardify.navigation.Screen.OcrResult.route)
+            }
+        }
     }
     
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap ->
-        // Handle captured image
-        // Note: For actual implementation, you'll need to save the bitmap and get its URI
-        Toast.makeText(context, "Camera functionality will be implemented", Toast.LENGTH_SHORT).show()
+        bitmap?.let {
+            com.example.cardify.ocr.CapturedImageHolder.bitmap = it
+            navController.navigate(com.example.cardify.navigation.Screen.OcrResult.route)
+        }
     }
     
     val fileLauncher = rememberLauncherForActivityResult(
