@@ -43,13 +43,21 @@ fun CardBookScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            itemsIndexed(viewModel.cards) { index, card ->
-                CardRow(card = card, onEdit = { onEdit(index, card) })
+        if (viewModel.cards.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) { }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                itemsIndexed(viewModel.cards) { index, card ->
+                    CardRow(card = card, onEdit = { onEdit(index, card) })
+                }
             }
         }
     }

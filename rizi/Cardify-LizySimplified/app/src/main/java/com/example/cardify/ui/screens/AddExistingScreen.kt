@@ -1,5 +1,6 @@
 package com.example.cardify.ui.screens
 
+import android.Manifest
 import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +62,14 @@ fun AddExistingScreen(
         bitmap?.let {
             com.example.cardify.ocr.CapturedImageHolder.bitmap = it
             navController.navigate(com.example.cardify.navigation.Screen.OcrResult.route)
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch(null)
         }
     }
     
@@ -112,7 +122,14 @@ fun AddExistingScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = { cameraLauncher.launch(null) }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = {
+                val permission = android.Manifest.permission.CAMERA
+                if (ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    cameraLauncher.launch(null)
+                } else {
+                    permissionLauncher.launch(permission)
+                }
+            }, modifier = Modifier.fillMaxWidth()) {
                 Text("카메라 찍기")
             }
 
