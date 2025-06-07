@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.cardify.cardbook.CardBookViewModel
 import com.example.cardify.models.BusinessCard
+import com.example.cardify.navigation.Screen
 import com.example.cardify.ocr.OcrHelper
 
 @Composable
@@ -67,7 +68,10 @@ fun OcrResultScreen(
                             sns = etc
                         )
                     )
-                    navController.popBackStack()
+                    com.example.cardify.ocr.CapturedImageHolder.bitmap = null
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Main.route) { inclusive = true }
+                    }
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text("저장")
                 }

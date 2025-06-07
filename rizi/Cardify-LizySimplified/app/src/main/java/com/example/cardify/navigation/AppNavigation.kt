@@ -26,6 +26,7 @@ import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
 import com.example.cardify.models.LoginViewModel
 import com.example.cardify.models.MainScreenViewModel
+import com.example.cardify.cardbook.CardBookViewModel
 import com.example.cardify.ui.screens.CardBookScreen
 import com.example.cardify.ui.screens.AddExistingScreen
 import com.example.cardify.ui.screens.EditCardScreen
@@ -89,6 +90,8 @@ val token = tokenManager.getToken()
     val currentQuestion by cardCreationViewModel.currentQuestion.collectAsState()
     val loginViewModel: LoginViewModel = viewModel()
     val mainScreenViewModel: MainScreenViewModel = viewModel()
+    // Shared view model to store recognized cards across screens
+    val cardBookViewModel: CardBookViewModel = viewModel()
 
     //Navhost maps object(e.g.Splash) to Screen.kt
     //Start Destination fixed to Splash, which indicates SplashScreen.
@@ -273,7 +276,6 @@ val token = tokenManager.getToken()
 
             composable(Screen.OcrResult.route) {
                 val bitmap = com.example.cardify.ocr.CapturedImageHolder.bitmap
-                val cardBookViewModel: com.example.cardify.cardbook.CardBookViewModel = viewModel()
                 if (bitmap != null) {
                     OcrResultScreen(
                         navController = navController,
@@ -286,7 +288,6 @@ val token = tokenManager.getToken()
             }
 
             composable(Screen.CardBook.route) {
-                val cardBookViewModel: com.example.cardify.cardbook.CardBookViewModel = viewModel()
                 CardBookScreen(
                     navController = navController,
                     viewModel = cardBookViewModel,
@@ -299,7 +300,6 @@ val token = tokenManager.getToken()
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val idx = backStackEntry.arguments?.getInt("index") ?: 0
-                val cardBookViewModel: com.example.cardify.cardbook.CardBookViewModel = viewModel()
                 val card = cardBookViewModel.cards.getOrNull(idx)
                 if (card != null) {
                     EditCardScreen(navController = navController, viewModel = cardBookViewModel, index = idx, card = card)
